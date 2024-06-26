@@ -32,7 +32,7 @@ Install the dependencies:
 npm install
 ```
 
-### Option 3: Install via npm
+### Option 2: Install via npm
 
 Install ISY-Crypto globally using npm:
 
