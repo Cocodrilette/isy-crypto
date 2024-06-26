@@ -1,0 +1,31 @@
+{
+  "name": "isy-crypto",
+  "version": "0.1.0",
+  "description": "CLI tool to encrypt and decrypt strings using AES-256-CBC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "build": "echo \"Build script not required for this project\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cocodrilette/isy-crypto.git"
+  },
+  "keywords": [
+    "encryption",
+    "decryption",
+    "AES-256-CBC",
+    "CLI"
+  ],
+  "author": "Cocodrilette <cocodrilette@gmail.com>",
+  "license": "ISC",
+  "homepage": "https://github.com/cocodrilette/isy-crypto#readme",
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  }
+}
