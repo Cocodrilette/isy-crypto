@@ -1,6 +1,6 @@
 {
   "name": "isy-crypto",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI tool to encrypt and decrypt strings using AES-256-CBC",
   "main": "index.js",
   "scripts": {

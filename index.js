@@ -8,7 +8,7 @@ const program = new Command();
 program
   .name("isy-crypto")
   .description("CLI tool to encrypt and decrypt strings using AES-256-CBC.")
-  .version("0.1.0");
+  .version("0.1.2");
 
 const getKeyAndIv = (userKey) => {
   const hash = crypto.createHash("sha256");
