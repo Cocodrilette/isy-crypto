@@ -56,7 +56,7 @@ To generate a public and private RSA key pair, use the `isy-crypto keygen` comma
 ```bash
 isy-crypto keygen -p /path/to/output/directory
 ```
-**⚠️ If `-p` or `--path` is not passed, the keys will be printed to the console.
+**⚠️ If `-p` or `--path` is not passed, the keys will be printed to the console.**
 
 
 ### Encrypting Text

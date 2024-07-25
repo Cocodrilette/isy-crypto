@@ -17,7 +17,7 @@ const program = new Command();
 program
   .name("isy-crypto")
   .description("CLI tool to encrypt and decrypt strings using AES-256-CBC.")
-  .version("0.2.0");
+  .version("0.2.1");
 
 program
   .command("keygen")
