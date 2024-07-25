@@ -1,46 +1,57 @@
 #!/usr/bin/env node
 
+import fs from "fs";
+import path from "path";
+
 import { Command } from "commander";
-import crypto from "crypto";
+import {
+  publicEncrypt,
+  privateDecrypt,
+  encrypt,
+  decrypt,
+  keygen,
+} from "./utils/index.js";
 
 const program = new Command();
 
 program
   .name("isy-crypto")
   .description("CLI tool to encrypt and decrypt strings using AES-256-CBC.")
-  .version("0.1.2");
+  .version("0.2.0");
 
-const getKeyAndIv = (userKey) => {
-  const hash = crypto.createHash("sha256");
-  hash.update(userKey);
+program
+  .command("keygen")
+  .option(
+    "-p, --path <path>",
+    "The path to save the keys, for example: `~/.keys/my-safe-key/id-rsa-public.pem`. If not provided, the keys will be printed to the console."
+  )
+  .description("Generates a new RSA key pair.")
+  .action((options) => {
+    const { publicKey, privateKey } = keygen();
 
-  const key = hash.digest();
-  const iv = crypto.randomBytes(16); // AES block size is 16 bytes
+    if (options.path) {
+      const pubPath = path.join(options.path, "id-rsa-public.pem");
+      const privPath = path.join(options.path, "id-rsa-private.pem");
 
-  return { key, iv };
-};
+      if (fs.existsSync(pubPath) || fs.existsSync(privPath)) {
+        console.error("Keys already exist in the specified path.");
+        process.exit(1);
+      }
+      
+      if (!fs.existsSync(options.path)) {
+        fs.mkdirSync(options.path, { recursive: true });
+      }
 
-const encrypt = (text, userKey) => {
-  const { key, iv } = getKeyAndIv(userKey);
-  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-  let encrypted = cipher.update(text, "utf8", "hex");
-  encrypted += cipher.final("hex");
+      fs.writeFileSync(pubPath, publicKey);
+      fs.writeFileSync(privPath, privateKey);
 
-  return iv.toString("hex") + ":" + encrypted;
-};
-
-const decrypt = (encryptedText, userKey) => {
-  const textParts = encryptedText.split(":");
-  const iv = Buffer.from(textParts.shift(), "hex");
-  const encrypted = textParts.join(":");
-  const { key } = getKeyAndIv(userKey);
-  const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-
-  let decrypted = decipher.update(encrypted, "hex", "utf8");
-  decrypted += decipher.final("utf8");
-
-  return decrypted;
-};
+      console.log(`Public key saved to: ${pubPath}`);
+      console.log(`Private key saved to: ${privPath}`);
+    } else {
+      console.log(`Public key:\n${publicKey}`);
+      console.log(`Private key:\n${privateKey}`);
+    }
+  });
 
 program
   .command("encrypt <text>")
@@ -49,12 +60,13 @@ program
   )
   .option(
     "-k, --key <key>",
-    "The encryption key. This can be any string. Internally, it is hashed to fit the encryption algorithm's requirements."
+    "The encryption key. Must be a valid RSA public key if the `--asimetric/-a` options is passed, if not, can be any string. Internally, it is hashed to fit the encryption algorithm's requirements."
   )
+  .option("-a, --asimetric", "Use an asimetric key")
+  .option("-p, --path <path>", "The path to the public key file.")
   .action((text, options) => {
-    console.log(`Encrypting "${text}" with key "${options.key}"`);
-    const encrypted = encrypt(text, options.key);
-    console.log(`Encrypted: ${encrypted}`);
+    const encrypted = options.asimetric ? publicEncrypt(text, options.key, options.path) : encrypt(text, options.key);
+    console.log(`Encrypted:\n${encrypted}`);
   });
 
 program
@@ -66,10 +78,13 @@ program
     "-k, --key <key>",
     "The decryption key. This must be the same key that was used to encrypt the text."
   )
+  .option("-a, --asimetric", "Use an asimetric key")
+  .option("-p, --path <path>", "The path to the private key file.")
   .action((text, options) => {
-    console.log(`Decrypting "${text}" with key "${options.key}"`);
-    const decrypted = decrypt(text, options.key);
-    console.log(`Decrypted: ${decrypted}`);
+    const decrypted = options.asimetric
+      ? privateDecrypt(text, options.key, options.path)
+      : decrypt(text, options.key);
+    console.log(`Decrypted:\n${decrypted}`);
   });
 
 program.parse(process.argv);
