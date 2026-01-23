@@ -20,7 +20,7 @@ Before installing ISY-Crypto, ensure you have [Node.js](https://nodejs.org/) ins
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/isy-crypto.git
+git clone https://github.com/Cocodrilette/isy-crypto.git
 ```
 
 Navigate to the project directory:
