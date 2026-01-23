@@ -1,7 +1,5 @@
 # ISY-Crypto CLI Tool
 
-> Asimetric Encryptation recently added 🎉
-
 ISY-Crypto is a powerful Command Line Interface (CLI) tool designed for encrypting and decrypting strings using the AES-256-CBC algorithm. It allows users to secure their data with a custom key, making it an essential utility for anyone looking to protect sensitive information.
 
 ## Features
